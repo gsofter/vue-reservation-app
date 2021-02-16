@@ -1,20 +1,11 @@
 <template>
-  <div>
-    <v-app-bar
-      color="deep-purple accent-4"
-      dense
-    >
+  <v-app dark>
+    <v-app-bar dense dark app>
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
       <v-toolbar-title>Reservation App</v-toolbar-title>
-
       <v-spacer></v-spacer>
-        <v-btn elevation={0} link href="/reservations">
-          Inventory
-        </v-btn>
-        <v-btn elevation={0} link href="/inventory">
-          Reservation
-        </v-btn>
+      <v-btn elevation="{0}" link href="/inventory"> Inventory </v-btn>
+      <v-btn elevation="{0}" link href="/reservations"> Reservation </v-btn>
       <v-spacer></v-spacer>
       <v-btn icon>
         <v-icon>mdi-heart</v-icon>
@@ -23,36 +14,11 @@
       <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
-
-      <v-menu
-        left
-        bottom
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            icon
-            v-bind="attrs"
-            v-on="on"
-          >
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn>
-        </template>
-
-        <v-list>
-          <v-list-item
-            v-for="n in 5"
-            :key="n"
-            @click="() => {}"
-          >
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
     </v-app-bar>
     <v-main>
-      
+      <router-view></router-view>
     </v-main>
-  </div>
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -68,7 +34,7 @@ export default Vue.extend({
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -76,7 +42,7 @@ export default Vue.extend({
 }
 
 #nav {
-  padding: 30px;
+  // padding: 30px;
 
   a {
     font-weight: bold;
