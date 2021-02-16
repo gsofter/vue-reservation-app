@@ -12,7 +12,8 @@ export default {
 
   async mounted() {
     try {
-      await axios.get('http://localhost:9090/test')
+      const response = await axios.get('http://localhost:9090/test')
+      console.log(response)
     } catch (error) {
       console.error(error)
     }
