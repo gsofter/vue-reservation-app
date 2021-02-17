@@ -27,7 +27,7 @@ export class Inventory extends Model<Inventory> {
     end_time: string
 
     @Column
-    seats: number
+    slots: number
 
     @ForeignKey(() => Restaurant)
     @Column({ onDelete: "CASCADE" })
@@ -56,7 +56,7 @@ export class Inventory extends Model<Inventory> {
             name: this.name,
             start_time: this.start_time,
             end_time: this.end_time,
-            seats: this.seats,
+            slots: this.slots,
             restaurant_id: this.restaurant_id,
         }
     }
