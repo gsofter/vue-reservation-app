@@ -3,7 +3,9 @@
     <v-dialog v-model="isShowing" persistent max-width="600" width="600">
       <v-card>
         <v-img :src="randomImage" height="100px"> </v-img>
-        <v-card-title> Create New Reservation </v-card-title>
+        <v-card-title>
+          {{ editing ? 'Edit Reservation' : 'Create a new Reservation' }}
+        </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
@@ -98,8 +100,11 @@
 
 <script>
 export default {
-  props: ['show'],
+  props: ['show', 'editing', 'selected'],
   name: 'ReservationModal',
+  mounted() {
+    this.refreshItemBuffer()
+  },
   computed: {
     isShowing: {
       get() {
@@ -116,10 +121,13 @@ export default {
   },
 
   methods: {
+    refreshItemBuffer() {
+      if (this.editing) this.itemBuffer = { ...this.selected }
+      else this.itemBuffer = {}
+    },
+
     saveClick() {
-      // TODO: handle save
-      //this.$emit('save')
-      console.log('saveClick', this.itemBuffer)
+      //  TODO: validation
       this.itemBuffer['restaurant_id'] = 1
       this.$emit('save', this.itemBuffer)
     },

@@ -24,6 +24,7 @@
             <td>{{ row.item.name }}</td>
             <td>{{ row.item.email }}</td>
             <td>{{ row.item.seats }}</td>
+            <td>{{ row.item.date }}</td>
             <td>
               <v-btn icon @click="openEditReservationModal(row.item)">
                 <v-icon>mdi-pencil</v-icon>
@@ -39,6 +40,8 @@
     <ReservationModal
       v-if="showModal"
       :show="showModal"
+      :editing="editing"
+      :selected="selected"
       @close="closeReservationModal"
       @save="handleSaveReservation"
     />
@@ -76,16 +79,20 @@ export default {
       }
     },
     openCreateReservationModal() {
-      console.log('openCreateReservationModal')
+      this.editing = false
       this.showModal = true
+      this.selected = null
     },
     closeReservationModal() {
       this.showModal = false
+      this.editing = false
+      this.selected = null
     },
     openEditReservationModal(item) {
       console.log('openEditReservationModal')
       this.selected = item
       this.showModal = true
+      this.editing = true
     },
     openDeleteConfirmModal(item) {
       this.selected = item
@@ -106,13 +113,36 @@ export default {
         console.error(error)
       }
     },
-    async handleSaveReservation(request) {
-      console.log('handleSaveReservation', request)
+
+    handleSaveReservation(request) {
+      if (this.editing) {
+        this.updateReservation(request)
+      } else {
+        this.createReservation(request)
+      }
+    },
+
+    async createReservation(request) {
       try {
         await axios.post(`http://localhost:9090/reservation`, request)
-        this.selected = null
-        this.showDeleteConfirmModal = false
         this.fetchData()
+        this.selected = null
+        this.showModal = false
+      } catch (error) {
+        console.error(error)
+        this.showModal = false
+      }
+    },
+
+    async updateReservation(request) {
+      try {
+        const { id, ...rest } = request
+        await axios.put(
+          `http://localhost:9090/reservation?reservation_id=${request.id}`,
+          rest
+        )
+        this.fetchData()
+        this.selected = null
         this.showModal = false
       } catch (error) {
         console.error(error)
@@ -126,6 +156,7 @@ export default {
       showModal: false,
       showDeleteConfirmModal: false,
       selected: null,
+      editing: false,
       headers: [
         {
           text: 'Name',
@@ -145,6 +176,11 @@ export default {
         {
           text: 'Date',
           value: 'date',
+          align: 'center'
+        },
+        {
+          text: '',
+          value: '',
           align: 'center'
         }
       ],
