@@ -24,6 +24,9 @@ export class Reservation extends Model<Reservation> {
     time: string
 
     @Column
+    email: string
+
+    @Column
     seats: number
 
     @ForeignKey(() => Restaurant)
@@ -53,6 +56,7 @@ export class Reservation extends Model<Reservation> {
             name: this.name,
             time: this.time,
             seats: this.seats,
+            email: this.email,
             restaurant_id: this.restaurant_id,
         }
     }

@@ -7,7 +7,7 @@
         class="green light-1"
         fab
         color="pink"
-        @click="openNewReservationDialog"
+        @click="openCreateReservationModal"
       >
         <v-icon>mdi-plus</v-icon>
       </v-btn>
@@ -23,20 +23,30 @@
           <tr>
             <td>{{ row.item.name }}</td>
             <td>{{ row.item.email }}</td>
-            <td>{{ row.item.partySize }}</td>
+            <td>{{ row.item.seats }}</td>
             <td>
-              <v-btn icon> <v-icon>mdi-pencil</v-icon> </v-btn>
-              <v-btn icon> <v-icon>mdi-delete</v-icon> </v-btn>
+              <v-btn icon @click="openEditReservationModal(row.item)">
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn icon @click="openDeleteConfirmModal(row.item)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
             </td>
           </tr>
         </template>
       </v-data-table>
     </div>
     <ReservationModal
-      v-if="showDialog"
-      :show="showDialog"
+      v-if="showModal"
+      :show="showModal"
       @close="closeReservationModal"
       @save="handleSaveReservation"
+    />
+
+    <DeleteConfirmModal
+      :show="showDeleteConfirmModal"
+      @close="closeDeleteConfirmModal"
+      @delete="confirmDelete"
     />
   </v-container>
 </template>
@@ -44,35 +54,69 @@
 <script>
 import axios from 'axios'
 import ReservationModal from './ReservationModal'
+import DeleteConfirmModal from './DeleteConfirmModal'
+
 export default {
   name: 'Reservations',
-  components: { ReservationModal },
+  components: { ReservationModal, DeleteConfirmModal },
   async mounted() {
-    try {
-      const response = await axios.get('http://localhost:9090/test')
-      console.log(response)
-    } catch (error) {
-      console.error(error)
-    }
+    await this.fetchData()
   },
 
   methods: {
-    openNewReservationDialog() {
-      console.log('openNewReservationDialog')
-      this.showDialog = true
+    async fetchData() {
+      try {
+        const response = await axios.get(
+          'http://localhost:9090/reservation?restaurant_id=1'
+        )
+        this.reservations = response.data
+        console.log('reservations', response.data)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    openCreateReservationModal() {
+      console.log('openCreateReservationModal')
+      this.showModal = true
     },
     closeReservationModal() {
-      this.showDialog = false
+      this.showModal = false
+    },
+    openEditReservationModal(item) {
+      console.log('openEditReservationModal')
+      this.selected = item
+      this.showModal = true
+    },
+    openDeleteConfirmModal(item) {
+      this.selected = item
+      this.showDeleteConfirmModal = true
+    },
+    closeDeleteConfirmModal() {
+      this.showDeleteConfirmModal = false
+    },
+    async confirmDelete() {
+      try {
+        await axios.delete(
+          `http://localhost:9090/reservation?reservation_id=${this.selected.id}`
+        )
+        this.selected = null
+        this.showDeleteConfirmModal = false
+        this.fetchData()
+      } catch (error) {
+        console.error(error)
+      }
     },
     handleSaveReservation(request) {
       console.log('handleSaveReservation', request)
-      this.showDialog = false
+      this.showModal = false
     }
   },
 
   data() {
     return {
-      showDialog: false,
+      showModal: false,
+      showDeleteConfirmModal: false,
+      selected: null,
       headers: [
         {
           text: 'Name',
@@ -95,26 +139,7 @@ export default {
           align: 'center'
         }
       ],
-      reservations: [
-        {
-          name: 'First',
-          email: 'first@test.com',
-          partySize: '1',
-          date: '2020/3/23'
-        },
-        {
-          name: 'Second',
-          email: 'Second@test.com',
-          partySize: '2',
-          date: '2020/3/24'
-        },
-        {
-          name: 'Third',
-          email: 'Third@test.com',
-          partySize: '3',
-          date: '2020/3/11'
-        }
-      ]
+      reservations: []
     }
   }
 }
