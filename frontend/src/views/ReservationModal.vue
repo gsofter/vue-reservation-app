@@ -8,47 +8,76 @@
           <v-container>
             <v-row>
               <v-col cols="12" sm="6" md="4" class="d-flex flex-row">
-                <v-text-field label="Name" required> </v-text-field>
+                <v-text-field
+                  label="Name"
+                  required
+                  :rules="[v => !!v || 'Name is required!']"
+                  v-model="itemBuffer.name"
+                >
+                </v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4" class="d-flex flex-row">
-                <v-text-field label="Email" required> </v-text-field>
+                <v-text-field
+                  label="Email"
+                  required
+                  :rules="[v => !!v || 'Email is required!']"
+                  v-model="itemBuffer.email"
+                >
+                </v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select :items="['Foo', 'Bar']" label="Items"></v-select>
+                <v-select
+                  :items="sizes"
+                  label="Items"
+                  v-model="itemBuffer.partySize"
+                ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="6">
                 <v-menu
                   ref="menu"
                   v-model="menu"
                   :close-on-content-click="false"
-                  :return-value.sync="date"
+                  :return-value.sync="itemBuffer.date"
                   transition="scale-transition"
                   offset-y
                   min-width="auto"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date"
+                      v-model="itemBuffer.date"
                       label="Date"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      required
+                      :rules="[v => !!v || 'Date is required!']"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" no-title scrollable>
+                  <v-date-picker v-model="itemBuffer.date" no-title scrollable>
                     <v-spacer></v-spacer>
                     <v-btn text color="primary" @click="menu = false">
                       Cancel
                     </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="$refs.menu.save(itemBuffer.date)"
+                    >
                       OK
                     </v-btn>
                   </v-date-picker>
                 </v-menu>
               </v-col>
               <v-col cols="12" sm="6" md="6">
-                <v-select :items="slots" label="Slots"> </v-select>
+                <v-select
+                  :items="slots"
+                  label="Slots"
+                  required
+                  :rules="[v => !!v || 'Slot is required!']"
+                  v-model="itemBuffer.slot"
+                >
+                </v-select>
               </v-col>
             </v-row>
           </v-container>
@@ -88,16 +117,24 @@ export default {
 
   methods: {
     saveClick() {
-      this.$emit('save')
       // TODO: handle save
+      //this.$emit('save')
+      console.log('saveClick', this.itemBuffer)
+    },
+
+    onClickSaveDate(date) {
+      console.log('onClickSaveDate', this.itemBuffer.date)
     }
   },
 
   data() {
     return {
+      itemBuffer: {},
+
       date: new Date().toISOString().substr(0, 10),
       menu: false,
-      slots: ['01:00 AM - 02:00AM', '02:00AM - 03:00AM', '03:00AM - 04:00AM']
+      slots: ['01:00 AM - 02:00AM', '02:00AM - 03:00AM', '03:00AM - 04:00AM'],
+      sizes: ['3', '4', '5', '6', '7', '8', '9']
     }
   }
 }
