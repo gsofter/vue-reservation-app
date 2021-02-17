@@ -148,10 +148,17 @@ export default {
 
     async updateInventory(request) {
       try {
-        const { id, ...rest } = request
+        const req = {
+          name: request.name,
+          [`start_time`]: request.startTime,
+          [`end_time`]: request.endTime,
+          [`slots`]: request.slots,
+          [`restaurant_id`]: 1
+        }
+
         await axios.put(
           `http://localhost:9090/inventory?inventory_id=${request.id}`,
-          rest
+          req
         )
         this.fetchData()
         this.selected = null

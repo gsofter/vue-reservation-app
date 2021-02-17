@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete } from '@overnightjs/core'
+import { Controller, Get, Post, Delete, Put } from '@overnightjs/core'
 import { Request, Response } from 'express'
 import Logger from '../logger'
 import { Inventory } from '../models'
@@ -48,15 +48,29 @@ export class InventoryController {
     }
   }
 
-  @Delete('')
-    private async delete(req: Request, res: Response) {
-        const { inventory_id } = req.query;
-        try {
-            await Inventory.destroy({ where: { id: inventory_id }})
-            return res.status(200).json({ "message": 'success'})
-        } catch (error) {
-            Logger.error(`failed to create reservation ${error}`)
-            return res.status(500).json({ error })
-        }
+  @Put('')
+  private async put(req: Request, res: Response) {
+    const { inventory_id } = req.query
+    const request = req.body
+
+    try {
+      await Inventory.update({ ...request }, { where: { id: inventory_id } })
+      return res.status(200).json({ message: 'success' })
+    } catch (error) {
+      Logger.error(`failed to create reservation ${error}`)
+      return res.status(500).json({ error })
     }
+  }
+
+  @Delete('')
+  private async delete(req: Request, res: Response) {
+    const { inventory_id } = req.query
+    try {
+      await Inventory.destroy({ where: { id: inventory_id } })
+      return res.status(200).json({ message: 'success' })
+    } catch (error) {
+      Logger.error(`failed to create reservation ${error}`)
+      return res.status(500).json({ error })
+    }
+  }
 }
