@@ -27,9 +27,9 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-select
-                  :items="sizes"
-                  label="Items"
-                  v-model="itemBuffer.partySize"
+                  :items="seats"
+                  label="Seats"
+                  v-model="itemBuffer.seats"
                 ></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="6">
@@ -75,7 +75,7 @@
                   label="Slots"
                   required
                   :rules="[v => !!v || 'Slot is required!']"
-                  v-model="itemBuffer.slot"
+                  v-model="itemBuffer.time"
                 >
                 </v-select>
               </v-col>
@@ -120,6 +120,8 @@ export default {
       // TODO: handle save
       //this.$emit('save')
       console.log('saveClick', this.itemBuffer)
+      this.itemBuffer['restaurant_id'] = 1
+      this.$emit('save', this.itemBuffer)
     },
 
     onClickSaveDate(date) {
@@ -130,11 +132,10 @@ export default {
   data() {
     return {
       itemBuffer: {},
-
       date: new Date().toISOString().substr(0, 10),
       menu: false,
-      slots: ['01:00 AM - 02:00AM', '02:00AM - 03:00AM', '03:00AM - 04:00AM'],
-      sizes: ['3', '4', '5', '6', '7', '8', '9']
+      slots: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
+      seats: [3, 4, 5, 6, 7, 8, 9]
     }
   }
 }

@@ -32,7 +32,7 @@ export class ReservationController {
         }
         try {
             const reservation = await Reservation
-              .create({ name, time, seats, restaurant_id })
+              .create({ name, time, seats, email, restaurant_id })
             return res.json(reservation.toJSON())
         } catch (error) {
             Logger.error(`failed to create reservation ${error}`)

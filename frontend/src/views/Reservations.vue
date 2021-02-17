@@ -106,9 +106,18 @@ export default {
         console.error(error)
       }
     },
-    handleSaveReservation(request) {
+    async handleSaveReservation(request) {
       console.log('handleSaveReservation', request)
-      this.showModal = false
+      try {
+        await axios.post(`http://localhost:9090/reservation`, request)
+        this.selected = null
+        this.showDeleteConfirmModal = false
+        this.fetchData()
+        this.showModal = false
+      } catch (error) {
+        console.error(error)
+        this.showModal = false
+      }
     }
   },
 
